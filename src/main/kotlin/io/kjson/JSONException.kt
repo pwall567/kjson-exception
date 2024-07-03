@@ -34,7 +34,7 @@ open class JSONException(
     /** The base text of the message. */
     val text: String,
     /** An optional key, indicating where the error occurred. */
-    val key: Any? = null,
+    open val key: Any? = null,
 ): RuntimeException(extendMessage(text, key)) {
 
     /** The extended message */

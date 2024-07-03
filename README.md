@@ -50,27 +50,44 @@ The `withCause()` function may be used to add a "`cause`" (an underlying causati
         }
 ```
 
+## Derived Classes
+
+The `JSONException` class is `open`, to allow it to be the base of a hierarchy of exception classes.
+The `key` property is also `open`, so that derived classes may restrict the `key` to a specific type.
+For example:
+
+```kotlin
+class ParseException(
+    text: String,
+    override val key: Coordinates,
+) : JSONException(text, key)
+
+data class Coordinates(val line: Int, val column: Int) {
+    override fun toString(): String = "line $line, column $column"
+}
+```
+
 ## Dependency Specification
 
-The latest version of the library is 1.0, and it may be obtained from the Maven Central repository.
+The latest version of the library is 1.1, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>io.kjson</groupId>
       <artifactId>kjson-exception</artifactId>
-      <version>1.0</version>
+      <version>1.1</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'io.kjson:kjson-exception:1.0'
+    implementation 'io.kjson:kjson-exception:1.1'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("io.kjson:kjson-exception:1.0")
+    implementation("io.kjson:kjson-exception:1.1")
 ```
 
 Peter Wall
 
-2024-07-02
+2024-07-03

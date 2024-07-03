@@ -31,6 +31,8 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.expect
 
+import java.net.URI
+
 class JSONExceptionTest {
 
     @Test fun `should create JSONException with simple message`() {
@@ -60,9 +62,49 @@ class JSONExceptionTest {
         }
     }
 
-    @Test fun `should create extended message`() {
+    @Test fun `should create extended message without creating exception`() {
         expect("Something went wrong") { JSONException.extendMessage("Something went wrong") }
         expect("Something went wrong, at startup") { JSONException.extendMessage("Something went wrong", "startup") }
     }
+
+    @Test fun `should allow simple derived exception class`() {
+        val baseMessage = "Something's on fire"
+        val derivedException = SimpleDerivedException(baseMessage, "home")
+        expect("Something's on fire, at home") { derivedException.message }
+        expect(baseMessage) { derivedException.text }
+        expect("home") { derivedException.key}
+    }
+
+    @Test fun `should allow strongly-typed key in derived exception class`() {
+        val uri = URI("http://example.com/dummy.page")
+        val baseMessage = "Something else went wrong"
+        val derivedException = URIDerivedException(baseMessage, uri)
+        expect("$baseMessage, at $uri") { derivedException.message }
+        expect(baseMessage) { derivedException.text }
+        val exceptionURI: URI = derivedException.key
+        expect(uri) { exceptionURI }
+    }
+
+    @Test fun `should add cause to derived exception class`() {
+        val baseMessage = "Something's on fire"
+        val derivedException = SimpleDerivedException(baseMessage, "home").withCause(RuntimeException("nested 2"))
+        expect("Something's on fire, at home") { derivedException.message }
+        expect(baseMessage) { derivedException.text }
+        expect("home") { derivedException.key}
+        assertNotNull(derivedException.cause) {
+            assertIs<RuntimeException>(it)
+            expect("nested 2") { it.message }
+        }
+    }
+
+    class SimpleDerivedException(
+        text: String,
+        key: Any?,
+    ) : JSONException(text, key)
+
+    class URIDerivedException(
+        text: String,
+        override val key: URI
+    ) : JSONException(text, key)
 
 }
