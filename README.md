@@ -21,10 +21,10 @@ The class is very straightforward &ndash; to throw a `JSONException` with a simp
 ```
 In this case, the message for the exception will be just the text supplied.
 
-But a common requirement of error reporting in JSON application is to identify the location within the JSON structure
+But a common requirement of error reporting in a JSON application is to identify the location within the JSON structure
 where the error occurred.
 For this purpose, the `JSONException` takes an optional second parameter, a `key`, specified as type `Any?`.
-If the `key` is present, and the `toString()` of its value is non-null, it is appended to the message with the word
+If the `key` is present, and the `toString()` of its value is not empty, it is appended to the message with the word
 "`at`", as follows:
 ```kotlin
         throw JSONException("Something went wrong", "/data/0/id")
@@ -49,6 +49,7 @@ The `withCause()` function may be used to add a "`cause`" (an underlying causati
             throw JSONException("Something failed").withCause(e)
         }
 ```
+This may be called once only, and should usually be called immediately after the creation of the exception.
 
 ## Derived Classes
 
@@ -69,25 +70,25 @@ data class Coordinates(val line: Int, val column: Int) {
 
 ## Dependency Specification
 
-The latest version of the library is 1.1, and it may be obtained from the Maven Central repository.
+The latest version of the library is 1.2, and it may be obtained from the Maven Central repository.
 
 ### Maven
 ```xml
     <dependency>
       <groupId>io.kjson</groupId>
       <artifactId>kjson-exception</artifactId>
-      <version>1.1</version>
+      <version>1.2</version>
     </dependency>
 ```
 ### Gradle
 ```groovy
-    implementation 'io.kjson:kjson-exception:1.1'
+    implementation 'io.kjson:kjson-exception:1.2'
 ```
 ### Gradle (kts)
 ```kotlin
-    implementation("io.kjson:kjson-exception:1.1")
+    implementation("io.kjson:kjson-exception:1.2")
 ```
 
 Peter Wall
 
-2024-07-03
+2024-07-08

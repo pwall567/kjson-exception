@@ -35,14 +35,15 @@ open class JSONException(
     val text: String,
     /** An optional key, indicating where the error occurred. */
     open val key: Any? = null,
-): RuntimeException(extendMessage(text, key)) {
+): RuntimeException(text) {
 
     /** The extended message */
     override val message: String
-        get() = super.message!! // message will always be non-null
+        get() = extendMessage(text, key)
 
     /**
-     * Add a "cause" [Throwable].
+     * Add a "cause" [Throwable].  This may be called once only, and should usually be called immediately after the
+     * creation of the exception.
      */
     fun withCause(throwable: Throwable): JSONException = apply {
         initCause(throwable)
