@@ -26,74 +26,74 @@
 package io.kjson
 
 import kotlin.test.Test
-import kotlin.test.assertIs
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.expect
 
 import java.net.URI
+
+import io.kstuff.test.shouldBe
+import io.kstuff.test.shouldBeNonNull
+import io.kstuff.test.shouldBeType
 
 class JSONExceptionTest {
 
     @Test fun `should create JSONException with simple message`() {
         val e = JSONException("simple message")
-        expect("simple message") { e.message }
-        expect("simple message") { e.text }
-        assertNull(e.key)
-        assertNull(e.cause)
+        e.message shouldBe "simple message"
+        e.text shouldBe "simple message"
+        e.key shouldBe null
+        e.cause shouldBe null
     }
 
     @Test fun `should create JSONException with message including key`() {
         val e = JSONException("Something went wrong", "end of file")
-        expect("Something went wrong, at end of file") { e.message }
-        expect("Something went wrong") { e.text }
-        expect("end of file") { e.key }
-        assertNull(e.cause)
+        e.message shouldBe "Something went wrong, at end of file"
+        e.text shouldBe "Something went wrong"
+        e.key shouldBe "end of file"
+        e.cause shouldBe null
     }
 
     @Test fun `should add cause to JSONException`() {
         val e = JSONException("Something went wrong", "end of file").withCause(RuntimeException("nested"))
-        expect("Something went wrong, at end of file") { e.message }
-        expect("Something went wrong") { e.text }
-        expect("end of file") { e.key }
-        assertNotNull(e.cause) {
-            assertIs<RuntimeException>(it)
-            expect("nested") { it.message }
+        e.message shouldBe "Something went wrong, at end of file"
+        e.text shouldBe "Something went wrong"
+        e.key shouldBe "end of file"
+        e.cause.shouldBeNonNull().let {
+            it.shouldBeType<RuntimeException>()
+            it.message shouldBe "nested"
         }
     }
 
     @Test fun `should create extended message without creating exception`() {
-        expect("Something went wrong") { JSONException.extendMessage("Something went wrong") }
-        expect("Something went wrong, at startup") { JSONException.extendMessage("Something went wrong", "startup") }
+        JSONException.extendMessage("Something went wrong") shouldBe "Something went wrong"
+        JSONException.extendMessage("Something went wrong", "startup") shouldBe "Something went wrong, at startup"
     }
 
     @Test fun `should allow simple derived exception class`() {
         val baseMessage = "Something's on fire"
         val derivedException = SimpleDerivedException(baseMessage, "home")
-        expect("Something's on fire, at home") { derivedException.message }
-        expect(baseMessage) { derivedException.text }
-        expect("home") { derivedException.key}
+        derivedException.message shouldBe "Something's on fire, at home"
+        derivedException.text shouldBe baseMessage
+        derivedException.key shouldBe "home"
     }
 
     @Test fun `should allow strongly-typed key in derived exception class`() {
         val uri = URI("http://example.com/dummy.page")
         val baseMessage = "Something else went wrong"
         val derivedException = URIDerivedException(baseMessage, uri)
-        expect("$baseMessage, at $uri") { derivedException.message }
-        expect(baseMessage) { derivedException.text }
+        derivedException.message shouldBe "$baseMessage, at $uri"
+        derivedException.text shouldBe baseMessage
         val exceptionURI: URI = derivedException.key
-        expect(uri) { exceptionURI }
+        exceptionURI shouldBe uri
     }
 
     @Test fun `should add cause to derived exception class`() {
         val baseMessage = "Something's on fire"
         val derivedException = SimpleDerivedException(baseMessage, "home").withCause(RuntimeException("nested 2"))
-        expect("Something's on fire, at home") { derivedException.message }
-        expect(baseMessage) { derivedException.text }
-        expect("home") { derivedException.key}
-        assertNotNull(derivedException.cause) {
-            assertIs<RuntimeException>(it)
-            expect("nested 2") { it.message }
+        derivedException.message shouldBe "Something's on fire, at home"
+        derivedException.text shouldBe baseMessage
+        derivedException.key shouldBe "home"
+        derivedException.cause.shouldBeNonNull().let {
+            it.shouldBeType<RuntimeException>()
+            it.message shouldBe "nested 2"
         }
     }
 

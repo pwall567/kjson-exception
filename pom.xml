@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kjson-exception</artifactId>
-  <version>1.2</version>
+  <version>1.3</version>
   <name>Exception class for JSON projects</name>
   <description>Exception class for multiple JSON projects.</description>
   <packaging>jar</packaging>
@@ -13,7 +13,7 @@
   <parent>
     <groupId>io.kjson</groupId>
     <artifactId>kjson-maven</artifactId>
-    <version>5.0</version>
+    <version>6.0</version>
   </parent>
 
   <properties>
@@ -60,6 +60,12 @@
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib-jdk8</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.kstuff</groupId>
+      <artifactId>should-test</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
